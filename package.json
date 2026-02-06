@@ -2,7 +2,7 @@
   "name": "my-ssh-client",
   "version": "1.0.0",
   "description": "Simple SSH Client with Beautiful UI",
-  "main": "main.js",
+  "main": "./out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
@@ -29,30 +29,38 @@
     "electron-vite": "^5.0.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
+    "typescript": "^5.9.3",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@xterm/addon-canvas": "^0.7.0",
     "clsx": "^2.1.1",
-    "electron-updater": "^6.7.3",
     "framer-motion": "^12.31.0",
     "fuse.js": "^7.1.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-icons": "^5.5.0",
-    "ssh2": "^1.15.0",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0",
     "xterm-addon-search": "^0.13.0",
     "zustand": "^5.0.11"
   },
+  "dependencies": {
+    "electron-updater": "^6.7.3",
+    "ssh2": "^1.15.0"
+  },
   "build": {
     "appId": "com.sungkwan.ssh-client",
     "productName": "My SSH Client",
+    "files": [
+      "out/**/*",
+      {
+        "from": "src/crypto.js",
+        "to": "out/main/src/crypto.js"
+      },
+      "package.json"
+    ],
     "directories": {
       "output": "release"
     },
@@ -86,7 +94,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "REPLACE_WITH_GITHUB_USERNAME",
+        "owner": "world-goes-to-hell",
         "repo": "my-ssh-client",
         "releaseType": "release"
       }
