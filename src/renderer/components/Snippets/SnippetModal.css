@@ -1,0 +1,120 @@
+/* Snippet Modal Overlay */
+.snippet-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Snippet Modal Container */
+.snippet-modal {
+  width: 90%;
+  max-width: 600px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.snippet-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-primary);
+}
+
+.snippet-modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Content */
+.snippet-modal-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.snippet-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.snippet-modal-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.snippet-modal-field input,
+.snippet-modal-field textarea {
+  padding: 10px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.snippet-modal-field input:focus,
+.snippet-modal-field textarea:focus {
+  border-color: var(--accent);
+}
+
+.snippet-modal-field textarea {
+  font-family: 'Consolas', 'Monaco', monospace;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.snippet-modal-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Footer */
+.snippet-modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-primary);
+}
+
+/* Scrollbar */
+.snippet-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.snippet-modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.snippet-modal-content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.snippet-modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

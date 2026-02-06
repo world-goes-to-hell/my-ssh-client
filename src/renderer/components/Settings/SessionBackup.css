@@ -1,0 +1,319 @@
+/* Session Backup Component */
+.session-backup {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+}
+
+/* Backup Section */
+.backup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.backup-section-header h4 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.backup-section-header p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Session Selection */
+.session-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.session-select-header {
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+.session-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.session-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+/* Session List (scoped to backup component) */
+.session-backup .session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.session-backup .session-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.session-backup .session-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.session-backup .session-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.session-backup .session-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+.session-backup .session-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.session-backup .session-list-empty svg {
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.session-backup .session-list-empty p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Session Item (scoped to backup component) */
+.session-backup .session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.session-backup .session-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-muted);
+}
+
+.session-backup .session-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.session-backup .session-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.session-backup .session-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.session-backup .session-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+}
+
+.session-backup .session-folder {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.session-check-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Import Options */
+.import-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.import-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.import-option:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-muted);
+}
+
+.import-option input[type="radio"] {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.import-option input[type="radio"]:checked ~ .import-option-content {
+  color: var(--text-primary);
+}
+
+.import-option-content {
+  flex: 1;
+}
+
+.import-option-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.import-option-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Backup Buttons */
+.backup-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.backup-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.backup-btn-primary {
+  background: var(--accent);
+  color: white;
+}
+
+.backup-btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.backup-btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.backup-btn-secondary:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Info Box */
+.backup-info {
+  padding: 16px;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid var(--accent-muted);
+  border-radius: var(--radius-sm);
+}
+
+.backup-info h5 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.backup-info ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.backup-info li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.backup-info li:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .session-backup .backup-section {
+    padding: 16px;
+  }
+
+  .session-backup .session-list {
+    max-height: 200px;
+  }
+
+  .session-backup .session-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

@@ -1,0 +1,68 @@
+.terminal-search {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.terminal-search .search-icon {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+}
+
+.terminal-search .search-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  width: 200px;
+  transition: all 0.2s;
+}
+
+.terminal-search .search-input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+}
+
+.terminal-search .search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.terminal-search button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.terminal-search button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.terminal-search button:active {
+  transform: scale(0.95);
+}
+
+.terminal-search button svg {
+  font-size: 16px;
+}

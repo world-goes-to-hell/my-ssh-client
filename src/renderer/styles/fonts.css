@@ -1,0 +1,66 @@
+/*
+ * Font Files - Local Bundle
+ *
+ * INSTRUCTIONS: Download the following font files and place them in:
+ * src/renderer/assets/fonts/
+ *
+ * Inter Font (from https://github.com/rsms/inter/releases):
+ *   - Inter-Regular.woff2
+ *   - Inter-Medium.woff2
+ *   - Inter-SemiBold.woff2
+ *   - Inter-Bold.woff2
+ *
+ * JetBrains Mono (from https://github.com/JetBrains/JetBrainsMono/releases):
+ *   - JetBrainsMono-Regular.woff2
+ *   - JetBrainsMono-Medium.woff2
+ */
+
+/* Inter Font Family - Local Bundle */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/Inter-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/Inter-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../assets/fonts/Inter-SemiBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/Inter-Bold.woff2') format('woff2');
+}
+
+/* JetBrains Mono - Terminal Font */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/JetBrainsMono-Medium.woff2') format('woff2');
+}

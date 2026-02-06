@@ -1,0 +1,342 @@
+/* Theme Editor Overlay */
+.theme-editor-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.theme-editor {
+  width: 100%;
+  max-width: 1200px;
+  max-height: 90vh;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.theme-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.theme-editor-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.theme-editor-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-editor-close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Content */
+.theme-editor-content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 24px;
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Left: Editor */
+.theme-editor-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.theme-editor-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.theme-editor-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.theme-editor-input {
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all var(--transition-fast);
+}
+
+.theme-editor-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.1);
+}
+
+.theme-editor-radio-group {
+  display: flex;
+  gap: 16px;
+}
+
+.theme-editor-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.theme-editor-radio-group input[type="radio"] {
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.theme-editor-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Color Grid */
+.theme-editor-color-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.color-picker-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.color-picker-input-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.color-picker-swatch {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.color-picker-swatch:hover {
+  border-color: var(--accent);
+}
+
+.color-picker-text {
+  flex: 1;
+  padding: 8px 10px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: 'Geist Mono', monospace;
+  transition: all var(--transition-fast);
+}
+
+.color-picker-text:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Right: Preview */
+.theme-editor-right {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: fit-content;
+}
+
+.theme-editor-preview {
+  background: var(--preview-bg-secondary);
+  border: 1px solid var(--preview-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.theme-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--preview-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.theme-preview-window {
+  background: var(--preview-bg-primary);
+  border: 1px solid var(--preview-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.theme-preview-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--preview-bg-tertiary);
+  border-bottom: 1px solid var(--preview-border);
+}
+
+.theme-preview-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.theme-preview-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--preview-text-secondary);
+  opacity: 0.5;
+}
+
+.theme-preview-title {
+  font-size: 12px;
+  color: var(--preview-text-secondary);
+}
+
+.theme-preview-terminal {
+  padding: 16px;
+  background: var(--preview-bg-tertiary);
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 200px;
+}
+
+.theme-preview-terminal-line {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+/* Footer */
+.theme-editor-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.theme-editor-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-editor-btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.theme-editor-btn-secondary:hover {
+  background: var(--bg-hover);
+}
+
+.theme-editor-btn-primary {
+  background: var(--accent);
+  color: white;
+}
+
+.theme-editor-btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+/* Scrollbar */
+.theme-editor-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.theme-editor-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.theme-editor-content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.theme-editor-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .theme-editor-content {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-editor-right {
+    position: static;
+  }
+
+  .theme-editor-color-grid {
+    grid-template-columns: 1fr;
+  }
+}

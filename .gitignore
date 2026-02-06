@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Build output
+out/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Electron
+*.asar
+
+# Logs
+*.log
+npm-debug.log*
+
+# Credentials
+credentials.json
+*.pem
+*.key
+
+# Temp build config files
+electron.vite.config.*.mjs
+
+# IDE project files
+*.iml
+nul
+
+# OMC state
+.omc/

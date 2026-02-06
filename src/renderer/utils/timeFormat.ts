@@ -1,0 +1,25 @@
+/**
+ * Format a timestamp to relative time in Korean (e.g., "2분 전", "1시간 전")
+ */
+export function formatRelativeTime(isoTimestamp: string): string {
+  const now = new Date()
+  const past = new Date(isoTimestamp)
+  const diffMs = now.getTime() - past.getTime()
+  const diffSeconds = Math.floor(diffMs / 1000)
+  const diffMinutes = Math.floor(diffSeconds / 60)
+  const diffHours = Math.floor(diffMinutes / 60)
+  const diffDays = Math.floor(diffHours / 24)
+
+  if (diffSeconds < 60) {
+    return '방금 전'
+  } else if (diffMinutes < 60) {
+    return `${diffMinutes}분 전`
+  } else if (diffHours < 24) {
+    return `${diffHours}시간 전`
+  } else if (diffDays < 7) {
+    return `${diffDays}일 전`
+  } else {
+    // For older dates, show the actual date
+    return past.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
+  }
+}

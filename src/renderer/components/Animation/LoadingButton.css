@@ -1,0 +1,48 @@
+.loading-button {
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.loading-button.is-loading {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.loading-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 8px;
+}
+
+.spinner-dot {
+  width: 6px;
+  height: 6px;
+  background-color: currentColor;
+  border-radius: 50%;
+  animation: spinner-bounce 1.4s infinite ease-in-out both;
+}
+
+.spinner-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.spinner-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes spinner-bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.loading-text-hidden {
+  opacity: 0;
+}
