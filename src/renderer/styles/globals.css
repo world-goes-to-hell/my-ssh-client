@@ -1274,6 +1274,11 @@ body {
   color: var(--accent);
 }
 
+.sftp-btn.sync-btn.active {
+  color: var(--accent);
+  background: rgba(137, 180, 250, 0.15);
+}
+
 .sftp-content {
   display: flex;
   flex: 1;
@@ -1432,6 +1437,11 @@ body {
   color: var(--accent);
 }
 
+.file-item.focused {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
 .file-item.parent-dir {
   color: var(--text-muted);
 }
@@ -1505,10 +1515,24 @@ body {
   text-align: right;
 }
 
+/* Transfer Queue Resize Handle */
+.transfer-resize-handle {
+  height: 4px;
+  cursor: ns-resize;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.transfer-resize-handle:hover,
+.transfer-resize-handle:active {
+  background: var(--accent);
+}
+
 /* Transfer Queue */
 .transfer-queue {
   border-top: 1px solid var(--border);
-  max-height: 120px;
+  height: 100%;
   overflow-y: auto;
 }
 

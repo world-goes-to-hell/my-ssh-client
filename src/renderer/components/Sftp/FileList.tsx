@@ -38,6 +38,7 @@ export function FileList({ files, selected, onNavigate, currentPath, type, sessi
   const fileListRef = useRef<HTMLDivElement>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number>(-1)
+  const [focusIndex, setFocusIndex] = useState<number>(-1)
 
   // Close context menu on click outside
   useEffect(() => {
@@ -50,6 +51,10 @@ export function FileList({ files, selected, onNavigate, currentPath, type, sessi
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  useEffect(() => {
+    setFocusIndex(-1)
+  }, [files])
+
   // Ctrl+A handler on the file-list element itself
   const handleListKeyDown = (e: React.KeyboardEvent) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
@@ -59,7 +64,92 @@ export function FileList({ files, selected, onNavigate, currentPath, type, sessi
       } else {
         store.selectAllLocal(sessionId)
       }
+      return
     }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      const nextIndex = Math.min(focusIndex + 1, files.length - 1)
+      setFocusIndex(nextIndex)
+      if (e.shiftKey) {
+        // Shift+ArrowDown: extend range selection
+        const start = Math.min(lastSelectedIndex >= 0 ? lastSelectedIndex : nextIndex, nextIndex)
+        const end = Math.max(lastSelectedIndex >= 0 ? lastSelectedIndex : nextIndex, nextIndex)
+        const rangeNames = files.slice(start, end + 1).map(f => f.name)
+        if (type === 'remote') {
+          store.setRemoteMultiSelection(sessionId, rangeNames)
+        } else {
+          store.setLocalMultiSelection(sessionId, rangeNames)
+        }
+      } else {
+        // Normal ArrowDown: single select
+        if (type === 'remote') {
+          store.setRemoteSelection(sessionId, files[nextIndex].name)
+        } else {
+          store.setLocalSelection(sessionId, files[nextIndex].name)
+        }
+        setLastSelectedIndex(nextIndex)
+      }
+      // Scroll focused item into view
+      const items = fileListRef.current?.querySelectorAll('.file-item:not(.parent-dir)')
+      items?.[nextIndex]?.scrollIntoView({ block: 'nearest' })
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      const prevIndex = Math.max(focusIndex - 1, 0)
+      setFocusIndex(prevIndex)
+      if (e.shiftKey) {
+        const start = Math.min(lastSelectedIndex >= 0 ? lastSelectedIndex : prevIndex, prevIndex)
+        const end = Math.max(lastSelectedIndex >= 0 ? lastSelectedIndex : prevIndex, prevIndex)
+        const rangeNames = files.slice(start, end + 1).map(f => f.name)
+        if (type === 'remote') {
+          store.setRemoteMultiSelection(sessionId, rangeNames)
+        } else {
+          store.setLocalMultiSelection(sessionId, rangeNames)
+        }
+      } else {
+        if (type === 'remote') {
+          store.setRemoteSelection(sessionId, files[prevIndex].name)
+        } else {
+          store.setLocalSelection(sessionId, files[prevIndex].name)
+        }
+        setLastSelectedIndex(prevIndex)
+      }
+      const items = fileListRef.current?.querySelectorAll('.file-item:not(.parent-dir)')
+      items?.[prevIndex]?.scrollIntoView({ block: 'nearest' })
+    }
+
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (focusIndex >= 0 && focusIndex < files.length) {
+        const file = files[focusIndex]
+        if (file.type === 'directory') {
+          const separator = type === 'local' && isWindows() ? '\\' : '/'
+          const newPath = currentPath === '/' || currentPath === 'C:\\'
+            ? (type === 'local' && isWindows() ? `${currentPath}${file.name}` : `/${file.name}`)
+            : `${currentPath}${separator}${file.name}`
+          onNavigate(newPath)
+          setFocusIndex(-1)
+        }
+      }
+    }
+
+    if (e.key === 'Backspace') {
+      e.preventDefault()
+      goUp()
+      setFocusIndex(-1)
+    }
+  }
+
+  const handleBlur = (e: React.FocusEvent) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return
+    if (type === 'remote') {
+      store.clearRemoteSelection(sessionId)
+    } else {
+      store.clearLocalSelection(sessionId)
+    }
+    setFocusIndex(-1)
   }
 
   const handleClick = (e: React.MouseEvent, file: FileItem, index: number) => {
@@ -260,17 +350,20 @@ export function FileList({ files, selected, onNavigate, currentPath, type, sessi
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     e.dataTransfer.dropEffect = 'copy'
     setIsDragOver(true)
   }
 
   const handleDragLeave = (e: React.DragEvent) => {
+    e.stopPropagation()
     if (e.currentTarget.contains(e.relatedTarget as Node)) return
     setIsDragOver(false)
   }
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     setIsDragOver(false)
 
     try {
@@ -289,6 +382,7 @@ export function FileList({ files, selected, onNavigate, currentPath, type, sessi
       className={`file-list ${isDragOver ? 'drag-over' : ''}`}
       tabIndex={0}
       onKeyDown={handleListKeyDown}
+      onBlur={handleBlur}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -300,7 +394,7 @@ export function FileList({ files, selected, onNavigate, currentPath, type, sessi
       {files.map((file, index) => (
         <div
           key={file.name}
-          className={`file-item ${file.type === 'directory' ? 'is-directory' : 'is-file'} ${selected.has(file.name) ? 'selected' : ''}`}
+          className={`file-item ${file.type === 'directory' ? 'is-directory' : 'is-file'} ${selected.has(file.name) ? 'selected' : ''} ${focusIndex === index ? 'focused' : ''}`}
           onClick={(e) => handleClick(e, file, index)}
           onDoubleClick={() => handleDoubleClick(file)}
           onContextMenu={(e) => handleContextMenu(e, file)}

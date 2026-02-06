@@ -5,7 +5,7 @@ import { TransferQueue } from './TransferQueue'
 import { PathBar } from './PathBar'
 import { OverwriteModal, OverwriteAction } from './OverwriteModal'
 import { toast } from '../../stores/toastStore'
-import { RiCloseFill, RiUploadFill, RiDownloadFill, RiRefreshFill, RiExternalLinkFill } from 'react-icons/ri'
+import { RiCloseFill, RiUploadFill, RiDownloadFill, RiRefreshFill, RiExternalLinkFill, RiLinkM, RiLinkUnlinkM } from 'react-icons/ri'
 import { RxDragHandleDots2 } from 'react-icons/rx'
 
 interface PendingTransfer {
@@ -42,6 +42,14 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
   const [currentTransferIndex, setCurrentTransferIndex] = useState(0)
   const [globalOverwriteAction, setGlobalOverwriteAction] = useState<OverwriteAction | null>(null)
 
+  // Transfer queue resize state
+  const [transferHeight, setTransferHeight] = useState(120)
+  const [isTransferResizing, setIsTransferResizing] = useState(false)
+
+  // Directory sync state
+  const [isSyncMode, setIsSyncMode] = useState(false)
+  const syncTriggeredRef = useRef(false)
+
   // Resize handlers
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
@@ -73,6 +81,32 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
       document.removeEventListener('mouseup', handleMouseUp)
     }
   }, [isResizing])
+
+  // Transfer queue resize handlers
+  useEffect(() => {
+    const handleTransferMouseMove = (e: MouseEvent) => {
+      if (!isTransferResizing || !panelRef.current) return
+      const panelRect = panelRef.current.getBoundingClientRect()
+      const newHeight = panelRect.bottom - e.clientY
+      const maxHeight = panelRect.height * 0.5
+      const clampedHeight = Math.max(60, Math.min(newHeight, maxHeight))
+      setTransferHeight(clampedHeight)
+    }
+
+    const handleTransferMouseUp = () => {
+      setIsTransferResizing(false)
+    }
+
+    if (isTransferResizing) {
+      document.addEventListener('mousemove', handleTransferMouseMove)
+      document.addEventListener('mouseup', handleTransferMouseUp)
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleTransferMouseMove)
+      document.removeEventListener('mouseup', handleTransferMouseUp)
+    }
+  }, [isTransferResizing])
 
   const handlePopOut = async () => {
     // Open SFTP in a new window
@@ -110,7 +144,6 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
   const loadRemoteFiles = async (path: string) => {
     try {
       const rawFiles = await window.electronAPI.sftpList(sessionId, path)
-      // Transform remote file format to match FileItem interface
       const files = (rawFiles || []).map((f: any) => ({
         name: f.name,
         type: f.isDirectory ? 'directory' : 'file',
@@ -119,7 +152,44 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
         permissions: f.permissions
       }))
       store.setRemoteFiles(sessionId, files)
+      const prevRemotePath = remotePath
       store.setRemotePath(sessionId, path)
+
+      // Directory sync: when remote navigates, sync local
+      if (isSyncMode && !syncTriggeredRef.current && prevRemotePath !== path) {
+        syncTriggeredRef.current = true
+        try {
+          const isGoingUp = path.split('/').filter(Boolean).length < prevRemotePath.split('/').filter(Boolean).length
+          if (isGoingUp) {
+            // Going up: move local up too
+            const isWin = isWindowsPath(localPath)
+            if (isWin) {
+              const parts = localPath.split('\\').filter(Boolean)
+              if (parts.length > 1) {
+                parts.pop()
+                await loadLocalFiles(parts.join('\\') + '\\')
+              }
+            } else {
+              const parts = localPath.split('/').filter(Boolean)
+              if (parts.length > 0) {
+                parts.pop()
+                await loadLocalFiles(parts.length === 0 ? '/' : `/${parts.join('/')}`)
+              }
+            }
+          } else {
+            // Going deeper: extract entered directory name
+            const enteredDir = path.split('/').filter(Boolean).pop()
+            if (enteredDir) {
+              const localHasDir = localFiles.some(f => f.name === enteredDir && f.type === 'directory')
+              if (localHasDir) {
+                await loadLocalFiles(joinPath(localPath, enteredDir, isWindowsPath(localPath)))
+              }
+            }
+          }
+        } finally {
+          syncTriggeredRef.current = false
+        }
+      }
     } catch (error) {
       console.error('Failed to load remote files:', error)
       toast.error('Failed to load remote files', error instanceof Error ? error.message : 'Unknown error')
@@ -130,7 +200,6 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
     try {
       const result = await window.electronAPI.localList(path)
       if (result.success) {
-        // Transform local file format to match FileItem interface
         const files = (result.files || []).map((f: any) => ({
           name: f.name,
           type: f.isDirectory ? 'directory' : 'file',
@@ -138,7 +207,39 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
           modifyTime: f.mtime
         }))
         store.setLocalFiles(sessionId, files)
+        const prevLocalPath = localPath
         store.setLocalPath(sessionId, path)
+
+        // Directory sync: when local navigates, sync remote
+        if (isSyncMode && !syncTriggeredRef.current && prevLocalPath !== path) {
+          syncTriggeredRef.current = true
+          try {
+            const isWin = isWindowsPath(prevLocalPath)
+            const prevParts = isWin ? prevLocalPath.split('\\').filter(Boolean) : prevLocalPath.split('/').filter(Boolean)
+            const newParts = isWin ? path.split('\\').filter(Boolean) : path.split('/').filter(Boolean)
+            const isGoingUp = newParts.length < prevParts.length
+
+            if (isGoingUp) {
+              // Going up: move remote up too
+              const remoteParts = remotePath.split('/').filter(Boolean)
+              if (remoteParts.length > 0) {
+                remoteParts.pop()
+                await loadRemoteFiles(remoteParts.length === 0 ? '/' : `/${remoteParts.join('/')}`)
+              }
+            } else {
+              // Going deeper: extract entered directory name
+              const enteredDir = newParts[newParts.length - 1]
+              if (enteredDir) {
+                const remoteHasDir = remoteFiles.some(f => f.name === enteredDir && f.type === 'directory')
+                if (remoteHasDir) {
+                  await loadRemoteFiles(joinPath(remotePath, enteredDir, false))
+                }
+              }
+            }
+          } finally {
+            syncTriggeredRef.current = false
+          }
+        }
       } else {
         toast.error('Failed to load local files', result.error || 'Unknown error')
       }
@@ -414,8 +515,10 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
   return (
     <div
       ref={panelRef}
-      className={`sftp-panel ${isResizing ? 'resizing' : ''}`}
+      className={`sftp-panel ${isResizing || isTransferResizing ? 'resizing' : ''}`}
       style={{ height: panelHeight }}
+      onDragOver={(e) => { if (e.dataTransfer.types.includes('Files') || e.dataTransfer.types.includes('application/json')) e.stopPropagation() }}
+      onDrop={(e) => { if (e.dataTransfer.types.includes('Files') || e.dataTransfer.types.includes('application/json')) e.stopPropagation() }}
     >
       {/* Resize Handle */}
       <div className="sftp-resize-handle" onMouseDown={handleMouseDown}>
@@ -425,6 +528,13 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
       <div className="sftp-header">
         <span className="sftp-title">SFTP</span>
         <div className="sftp-actions">
+          <button
+            className={`sftp-btn sync-btn ${isSyncMode ? 'active' : ''}`}
+            onClick={() => setIsSyncMode(!isSyncMode)}
+            title={isSyncMode ? '디렉토리 동기화 해제' : '디렉토리 동기화'}
+          >
+            {isSyncMode ? <RiLinkM size={16} /> : <RiLinkUnlinkM size={16} />}
+          </button>
           <button className="sftp-btn" onClick={handleUpload} title="Upload">
             <RiUploadFill size={16} />
           </button>
@@ -492,7 +602,15 @@ export function SftpPanel({ sessionId }: SftpPanelProps) {
         </div>
       </div>
 
-      <TransferQueue sessionId={sessionId} />
+      {/* Transfer Queue Resize Handle */}
+      <div
+        className="transfer-resize-handle"
+        onMouseDown={(e) => { e.preventDefault(); setIsTransferResizing(true) }}
+      />
+
+      <div style={{ height: transferHeight, minHeight: 60, overflow: 'hidden' }}>
+        <TransferQueue sessionId={sessionId} />
+      </div>
 
       <OverwriteModal
         open={overwriteModalOpen}

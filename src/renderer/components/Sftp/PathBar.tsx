@@ -79,6 +79,7 @@ export function PathBar({ path, onNavigate, type, label }: PathBarProps) {
           onChange={(e) => setInputPath(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
+          onFocus={(e) => e.target.select()}
           autoFocus
         />
       ) : (
