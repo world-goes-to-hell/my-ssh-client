@@ -10,10 +10,11 @@
     "start:legacy": "electron .",
     "build:legacy": "electron-builder --win portable",
     "build:install": "electron-builder --win nsis",
-    "build:publish": "electron-vite build && electron-builder --win --publish always",
-    "build:nsis": "electron-vite build && electron-builder --win nsis",
-    "build:portable": "electron-vite build && electron-builder --win portable",
-    "build:all": "electron-vite build && electron-builder --win nsis --win portable",
+    "build:copy-extra": "node -e \"require('fs').mkdirSync('out/main/src',{recursive:true});require('fs').copyFileSync('src/crypto.js','out/main/src/crypto.js')\"",
+    "build:publish": "electron-vite build && npm run build:copy-extra && electron-builder --win --publish always",
+    "build:nsis": "electron-vite build && npm run build:copy-extra && electron-builder --win nsis",
+    "build:portable": "electron-vite build && npm run build:copy-extra && electron-builder --win portable",
+    "build:all": "electron-vite build && npm run build:copy-extra && electron-builder --win nsis --win portable",
     "typecheck": "tsc --noEmit"
   },
   "author": "SungKwan",
@@ -55,10 +56,6 @@
     "productName": "My SSH Client",
     "files": [
       "out/**/*",
-      {
-        "from": "src/crypto.js",
-        "to": "out/main/src/crypto.js"
-      },
       "package.json"
     ],
     "directories": {

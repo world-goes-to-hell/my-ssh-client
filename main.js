@@ -97,7 +97,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'src', 'preload.js')
+      preload: path.join(__dirname, '../preload/index.js')
     }
   });
 
@@ -109,7 +109,7 @@ function createWindow() {
     mainWindow.loadURL('http://localhost:5173')
     mainWindow.webContents.openDevTools()
   } else {
-    mainWindow.loadFile(path.join(__dirname, 'out/renderer/index.html'))
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
 
   // Disable Electron's built-in zoom, use IPC for terminal-only font size control
@@ -215,7 +215,7 @@ function createSftpWindow(sessionId, localPath, remotePath) {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'src', 'preload.js')
+      preload: path.join(__dirname, '../preload/index.js')
     }
   });
 
@@ -232,7 +232,7 @@ function createSftpWindow(sessionId, localPath, remotePath) {
   } else if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
     sftpWindow.loadURL(`http://localhost:5173?${params.toString()}`)
   } else {
-    sftpWindow.loadFile(path.join(__dirname, 'out/renderer/index.html'), {
+    sftpWindow.loadFile(path.join(__dirname, '../renderer/index.html'), {
       query: { sftpMode: 'true', sessionId, localPath, remotePath }
     })
   }
@@ -257,7 +257,7 @@ function createTerminalWindow(sessionId, title) {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'src', 'preload.js')
+      preload: path.join(__dirname, '../preload/index.js')
     }
   });
 
@@ -272,7 +272,7 @@ function createTerminalWindow(sessionId, title) {
   } else if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
     terminalWindow.loadURL(`http://localhost:5173?${params.toString()}`)
   } else {
-    terminalWindow.loadFile(path.join(__dirname, 'out/renderer/index.html'), {
+    terminalWindow.loadFile(path.join(__dirname, '../renderer/index.html'), {
       query: { terminalMode: 'true', sessionId, title }
     })
   }
